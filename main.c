@@ -4,7 +4,7 @@
 
 void signup();
 void login();
-int checkCredentials(const char *username, const char *password);
+int logincheck(char u[], char p[]);
 
 int main(){
     
@@ -12,7 +12,7 @@ int main(){
     
     while(1){
 
-    printf("What would like to do?\n");
+    printf("What would you like to do?\n");
     printf("1.Login\n");
     printf("2.Sign-Up\n");
     printf("3.Exit\n");
@@ -38,7 +38,7 @@ int main(){
 
         case 3:
 
-        printf("3\n");
+        printf("Return For Managing Your Expenses!\n");
 
         return 0;
 
@@ -55,20 +55,18 @@ int main(){
 void signup(){
 
     char username[100],password[100];
-    printf("Enter Username:(No Spaces)");
+    printf("Enter Username:(No Spaces)\n");
     scanf("%s",username);
-    getchar();
 
-    printf("Enter password:(No Spaces)");
+    printf("Enter password:(No Spaces)\n");
     scanf("%s",password);
-    getchar();
 
     printf("%s\n",username);
     printf("%s\n",password);
 
     FILE* sign = fopen("users.csv","a+");
 
-    fprintf(sign,"%s | %s\n", username, password);
+    fprintf(sign,"%s|%s\n", username, password);
 
     fclose(sign);
 
@@ -77,29 +75,64 @@ void signup(){
 void login(){
 
     char username[100],password[100];
-    printf("Enter Username:(no spaces)");
+
+    printf("Enter Username:(no Spaces)\n");
     scanf("%s",username);
-    getchar();
 
-    printf("Enter password:(no spaces)");
+    printf("Enter password:(no Spaces)\n");
     scanf("%s",password);
-    getchar();
 
-    FILE* login = fopen("users.csv","r");
+    int found = logincheck(username,password);
 
-    // * doesn't do shit from here onwards
+    if (found){
 
-    char line[1024];
-    while (fgets(line, 1024, login)) {
-        line[strcspn(line, "\n")] = 0;
-        char *token = strtok(line, ",");
-        while (token != NULL) {
-            printf("%s ", token);
-            token = strtok(NULL, ",");
-        }
-        printf("\n");
+        printf("Login Successful!\n");
+
     }
 
-    fclose(login);
-    
+    else{
+        printf("Failed Login! Try Again.\n");
+    }
+}
+
+int logincheck(char u[], char p[]){
+
+    FILE *f = fopen("users.csv", "r");
+
+    char line[100];
+
+    while (fgets(line, 100, f)) {
+
+        char fileUsername[50], filePassword[50];
+
+        line[strcspn(line, "\n")] = 0;
+
+        char *token = strtok(line, "|");
+
+        if (token != NULL) {
+
+            strcpy(fileUsername, token);
+
+            token = strtok(NULL, "|");
+
+            if (token != NULL) {
+
+                strcpy(filePassword, token);
+
+            }
+
+            if (strcmp(u, fileUsername) == 0 && strcmp(p, filePassword) == 0) {
+
+                return 1;
+
+            }
+            else{
+
+                return 0;
+
+            }
+        }
+    }
+
+    fclose(f);
 }
