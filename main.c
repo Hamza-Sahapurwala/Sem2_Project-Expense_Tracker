@@ -1,12 +1,14 @@
 #include<stdio.h>
 #include<conio.h>
 #include<string.h>
+#include<stdlib.h>
 
 void signup();
 void newsignup(char u[]);
 void login();
 int logincheck(char u[], char p[]);
 int signupcheck(char u[], char p[]);
+void login_successful(char u[]);
 
 int main(){
     
@@ -15,9 +17,9 @@ int main(){
     while(1){
 
     printf("What would you like to do?\n");
-    printf("1.Login\n");
-    printf("2.Sign-Up\n");
-    printf("3.Exit\n");
+    printf("1. Login\n");
+    printf("2. Sign-Up\n");
+    printf("3. Exit\n");
     printf("Enter 1-3:\n");
 
     int inputforuser;
@@ -73,6 +75,8 @@ void signup(){
     fclose(sign);
 
     newsignup(username);
+
+    login_successful(username);
     }
 
     else
@@ -111,6 +115,8 @@ void login(){
     if (found){
 
         printf("Login Successful!\n");
+
+        login_successful(username);
 
     }
 
@@ -201,4 +207,43 @@ int signupcheck(char u[], char p[]){
     fclose(f);
     return 1;
 
+}
+
+void login_successful(char u[]){
+
+    int input;
+
+    printf("Welcome to the Expense Management System!\n");
+
+    while (1)
+    {   
+        printf("What would you like to do?\n");
+        
+        printf("1. Add Record\n");
+        printf("2. Delete Record\n");
+        printf("3. See Records\n");
+        printf("4. Go Back to Login/SignUp Page\n");
+        printf("5. Exit\n");
+        printf("Enter 1-5:\n");
+
+        scanf("%d",&input);
+        
+        switch (input)
+        {
+            case 1:
+
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                return;
+            case 5:
+                printf("Return For Managing Your Expenses!\n");
+                exit(0);
+            default:
+                printf("Choose between 1-5!\n");    
+        }    
+    }
 }
