@@ -3,6 +3,7 @@
 #include<string.h>
 
 void signup();
+void newsignup(char u[]);
 void login();
 int logincheck(char u[], char p[]);
 
@@ -61,14 +62,29 @@ void signup(){
     printf("Enter password:(No Spaces)\n");
     scanf("%s",password);
 
-    printf("%s\n",username);
-    printf("%s\n",password);
-
     FILE* sign = fopen("users.csv","a+");
 
     fprintf(sign,"%s|%s\n", username, password);
 
     fclose(sign);
+
+    newsignup(username);
+
+}
+
+void newsignup(char u[]){
+
+    char filename[100] = "";
+    
+    strcat(filename, ".\\UserData\\");
+
+    strcat(filename, u);
+
+    strcat(filename, ".csv");
+
+    FILE* newsign = fopen(filename, "a+");
+
+    fclose(newsign);
 
 }
 
