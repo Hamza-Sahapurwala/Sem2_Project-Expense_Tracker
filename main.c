@@ -6,6 +6,7 @@ void signup();
 void newsignup(char u[]);
 void login();
 int logincheck(char u[], char p[]);
+int signupcheck(char u[], char p[]);
 
 int main(){
     
@@ -56,11 +57,14 @@ int main(){
 void signup(){
 
     char username[100],password[100];
+    printf("SignUp Screen:\n");
     printf("Enter Username:(No Spaces)\n");
     scanf("%s",username);
 
     printf("Enter password:(No Spaces)\n");
     scanf("%s",password);
+
+    if (signupcheck(username, password)){
 
     FILE* sign = fopen("users.csv","a+");
 
@@ -69,7 +73,10 @@ void signup(){
     fclose(sign);
 
     newsignup(username);
+    }
 
+    else
+    printf("Try Signing Up Once Again!\n");
 }
 
 void newsignup(char u[]){
@@ -92,6 +99,7 @@ void login(){
 
     char username[100],password[100];
 
+    printf("Login Screen:\n");
     printf("Enter Username:(no Spaces)\n");
     scanf("%s",username);
 
@@ -119,36 +127,78 @@ int logincheck(char u[], char p[]){
 
     while (fgets(line, 100, f)) {
 
-        char fileUsername[50], filePassword[50];
+        char username[50], password[50];
 
         line[strcspn(line, "\n")] = 0;
 
-        char *token = strtok(line, "|");
+        char* token = strtok(line, "|");
 
         if (token != NULL) {
 
-            strcpy(fileUsername, token);
+            strcpy(username, token);
 
             token = strtok(NULL, "|");
 
             if (token != NULL) {
 
-                strcpy(filePassword, token);
+                strcpy(password, token);
 
             }
 
-            if (strcmp(u, fileUsername) == 0 && strcmp(p, filePassword) == 0) {
+            if (strcmp(u, username) == 0 && strcmp(p, password) == 0) {
 
                 return 1;
 
             }
-            else{
+        }
+    }
+    
+    fclose(f);
+    return 0;
+}
+
+int signupcheck(char u[], char p[]){
+
+    FILE *f = fopen("users.csv", "r");
+
+    char line[100];
+
+    if (strlen(u) == 0 || strlen(p) == 0) {
+
+        printf("Username or password can't be empty.\n");
+
+        return 0;
+    }
+    if (strlen(p) < 4) {
+
+        printf("Password must be at least 4 characters.\n");
+
+        return 0;
+    }
+
+    while (fgets(line, 100, f)) {
+
+        char fileUsername[50];
+
+        line[strcspn(line, "\n")] = 0;
+
+        char* token = strtok(line, "|");
+
+        if (token != NULL) {
+
+            strcpy(fileUsername, token);
+
+            if (strcmp(u, fileUsername) == 0) {
+
+                printf("The UserName has already been taken!\n");
 
                 return 0;
 
             }
         }
     }
-
+    
     fclose(f);
+    return 1;
+
 }
