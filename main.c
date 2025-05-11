@@ -9,6 +9,8 @@ void login();
 int logincheck(char u[], char p[]);
 int signupcheck(char u[], char p[]);
 void login_successful(char u[]);
+void add_record(char u[]);
+int category(char* c);
 
 int main(){
     
@@ -85,10 +87,8 @@ void signup(){
 
 void newsignup(char u[]){
 
-    char filename[100] = "";
+    char filename[100] = ".\\UserData\\";
     
-    strcat(filename, ".\\UserData\\");
-
     strcat(filename, u);
 
     strcat(filename, ".csv");
@@ -231,7 +231,7 @@ void login_successful(char u[]){
         switch (input)
         {
             case 1:
-
+                add_record(u);
                 break;
             case 2:
                 break;
@@ -246,4 +246,85 @@ void login_successful(char u[]){
                 printf("Choose between 1-5!\n");    
         }    
     }
+}
+
+int category(char* c){
+
+    int choice;
+
+    while(1){
+
+    printf("Enter Your Category:\n");
+
+    printf("1. Food\n");
+    printf("2. Transport\n");
+    printf("3. Clothing\n");
+    printf("4. Miscellonous\n");
+
+    scanf("%d",&choice);
+
+    switch (choice)
+    {
+    case 1:
+        strcpy(c,"Food");
+        return 0;
+    
+    case 2:
+        strcpy(c,"Transport");
+        return 0;
+
+    case 3:
+        strcpy(c,"Clothing");
+        return 0;
+
+    case 4:
+        strcpy(c,"Miscellonous");
+        return 0;
+    
+    default:
+        printf("Choose from the Options!\n");
+    }
+}
+
+}
+
+void add_record(char u[]){
+
+    char filename[100] = ".\\UserData\\";
+
+    int id;
+
+    float amt;
+
+    char date[100], cat[100],line[256];
+    
+    strcat(filename, u);
+
+    strcat(filename, ".csv");
+
+    FILE* addrecord = fopen(filename, "a+");
+
+    printf("Enter Amount:\n");
+
+    scanf("%f",&amt);
+
+    printf("Enter Date:\n");
+
+    scanf("%s", date);
+
+    category(cat);
+
+    while (fgets(line, sizeof(line), addrecord)) {
+        int temp;
+        if (sscanf(line, "%d,", &temp) == 1) {
+            if (temp > id) {
+                id = temp;
+            }
+        }
+    }
+
+    fprintf(addrecord, "%d|%.2f|%s|%s\n", id + 1, amt, date, cat);
+
+    fclose(addrecord);
+
 }
