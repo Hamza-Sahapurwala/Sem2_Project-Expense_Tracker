@@ -11,6 +11,7 @@ int signupcheck(char u[], char p[]);
 void login_successful(char u[]);
 void add_record(char u[]);
 int category(char* c);
+void see_record(char u[]);
 
 int main(){
     
@@ -70,7 +71,7 @@ void signup(){
 
     if (signupcheck(username, password)){
 
-    FILE* sign = fopen("users.csv","a+");
+    FILE* sign = fopen("users.csv","a");
 
     fprintf(sign,"%s|%s\n", username, password);
 
@@ -93,7 +94,7 @@ void newsignup(char u[]){
 
     strcat(filename, ".csv");
 
-    FILE* newsign = fopen(filename, "a+");
+    FILE* newsign = fopen(filename, "a");
 
     fclose(newsign);
 
@@ -221,10 +222,11 @@ void login_successful(char u[]){
         
         printf("1. Add Record\n");
         printf("2. Delete Record\n");
-        printf("3. See Records\n");
-        printf("4. Go Back to Login/SignUp Page\n");
-        printf("5. Exit\n");
-        printf("Enter 1-5:\n");
+        printf("3. Edit Record\n");
+        printf("4. See Records\n");
+        printf("5. Go Back to Login/SignUp Page\n");
+        printf("6. Exit\n");
+        printf("Enter 1-6:\n");
 
         scanf("%d",&input);
         
@@ -238,8 +240,11 @@ void login_successful(char u[]){
             case 3:
                 break;
             case 4:
-                return;
+                see_record(u);
+                break;
             case 5:
+                return;
+            case 6:
                 printf("Return For Managing Your Expenses!\n");
                 exit(0);
             default:
@@ -314,7 +319,7 @@ void add_record(char u[]){
 
     category(cat);
 
-    while (fgets(line, sizeof(line), addrecord)) {
+    while (fgets(line, 256, addrecord)) {
         int temp;
         if (sscanf(line, "%d,", &temp) == 1) {
             if (temp > id) {
@@ -326,5 +331,31 @@ void add_record(char u[]){
     fprintf(addrecord, "%d|%.2f|%s|%s\n", id + 1, amt, date, cat);
 
     fclose(addrecord);
+
+}
+
+void see_record(char u[]){
+
+    char filename[100] = ".\\UserData\\", line[100];
+
+    strcat(filename, u);
+
+    strcat(filename, ".csv");
+
+    FILE* seerecord = fopen(filename, "r");
+
+    while(fgets(line, 100, seerecord)){
+
+        char* id = strtok(line, "|");
+
+        char* amount = strtok(NULL, "|");
+
+        char* date = strtok(NULL, "|");
+
+        char* category = strtok(NULL, "\n");
+
+        printf("ID:%s\tAmount:%s\tDate:%s\tCategory:%s\n", id, amount, date, category);
+
+    }
 
 }
