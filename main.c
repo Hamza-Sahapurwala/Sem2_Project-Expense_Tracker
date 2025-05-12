@@ -12,6 +12,7 @@ void login_successful(char u[]);
 void add_record(char u[]);
 int category(char* c);
 void see_record(char u[]);
+void edit_record(char u[]);
 
 int main(){
     
@@ -238,6 +239,7 @@ void login_successful(char u[]){
             case 2:
                 break;
             case 3:
+                edit_record(u);
                 break;
             case 4:
                 see_record(u);
@@ -360,4 +362,73 @@ void see_record(char u[]){
 
     fclose(seerecord);
 
+}
+
+void edit_record(char u[]){
+
+    char filename[100] = ".\\UserData\\";
+    strcat(filename, u);
+    strcat(filename, ".csv");
+
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("No records found!\n");
+        return;
+    }
+
+    int ids[100], count = 0;
+    float amounts[100];
+    char dates[100][50], categories[100][50];
+    char line[256];
+
+    while (fgets(line, sizeof(line), file)) {
+        sscanf(line, "%d|%f|%[^|]|%[^\n]", &ids[count], &amounts[count], dates[count], categories[count]);
+        count++;
+    }
+    fclose(file);
+
+    if (count == 0) {
+        printf("No records to edit.\n");
+        return;
+    }
+
+    int id_to_edit, found = 0;
+    printf("Enter the ID of the record to edit: ");
+    scanf("%d", &id_to_edit);
+
+    for (int i = 0; i < count; i++) {
+        if (ids[i] == id_to_edit) {
+            found = 1;
+            int choice;
+            printf("What do you want to edit?\n");
+            printf("1. Amount\n2. Date\n3. Category\nEnter 1-3: ");
+            scanf("%d", &choice);
+
+            if (choice == 1) {
+                printf("Enter new Amount: ");
+                scanf("%f", &amounts[i]);
+            } else if (choice == 2) {
+                printf("Enter new Date: ");
+                scanf("%s", dates[i]);
+            } else if (choice == 3) {
+                category(categories[i]);
+            } else {
+                printf("Invalid choice.\n");
+            }
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Record with ID %d not found.\n", id_to_edit);
+        return;
+    }
+
+    file = fopen(filename, "w");
+    for (int i = 0; i < count; i++) {
+        fprintf(file, "%d|%.2f|%s|%s\n", ids[i], amounts[i], dates[i], categories[i]);
+    }
+    fclose(file);
+
+    printf("Record edited successfully!\n");
 }
