@@ -358,4 +358,6 @@ void see_record(char u[]){
 
     }
 
+    fclose(seerecord);
+
 }
