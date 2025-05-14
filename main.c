@@ -13,6 +13,7 @@ void add_record(char u[]);
 int category(char* c);
 void see_record(char u[]);
 void edit_record(char u[]);
+void delete_record(char u[]);
 
 int main(){
     
@@ -237,6 +238,7 @@ void login_successful(char u[]){
                 add_record(u);
                 break;
             case 2:
+                delete_record(u);
                 break;
             case 3:
                 edit_record(u);
@@ -431,4 +433,51 @@ void edit_record(char u[]){
     fclose(file);
 
     printf("Record edited successfully!\n");
+}
+
+void delete_record(char u[]){
+
+    char filename[100] = ".\\UserData\\";
+    strcat(filename, u);
+    strcat(filename, ".csv");
+
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("No records found!\n");
+        return;
+    }
+
+    int ids[100], count = 0, found = 0;
+    float amounts[100];
+    char dates[100][50], categories[100][50];
+    char line[256];
+
+    while (fgets(line, sizeof(line), file)) {
+        sscanf(line, "%d|%f|%[^|]|%[^\n]", &ids[count], &amounts[count], dates[count], categories[count]);
+        count++;
+    }
+    fclose(file);
+
+    int id_to_delete;
+    printf("Enter the ID of the record to delete: ");
+    scanf("%d", &id_to_delete);
+
+    file = fopen(filename, "w");
+    int new_id = 1;
+    for (int i = 0; i < count; i++) {
+        if (ids[i] != id_to_delete) {
+            fprintf(file, "%d|%.2f|%s|%s\n", new_id, amounts[i], dates[i], categories[i]);
+            new_id++;
+        } else {
+            found = 1;
+        }
+    }
+    fclose(file);
+
+    if (found) {
+        printf("Record deleted successfully and IDs updated!\n");
+    } else {
+        printf("Record with ID %d not found.\n", id_to_delete);
+    }
+
 }
