@@ -1,4 +1,4 @@
-// #include<stdio.h>
+/*// #include<stdio.h>
 // #include<conio.h>
 // #include<string.h>
 // #include<stdlib.h>
@@ -569,26 +569,14 @@
 //     } else {
 //         printf("Failed to launch Gnuplot.\n");
 //     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
+// }*/
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h> // For exit(), system()
-#include <ctype.h>  // For isspace (if needed for more robust input, not used heavily here)
+#include <stdlib.h> 
+#include <ctype.h>  
 
-// Function Declarations
+
 void clear_screen();
 void clear_input_buffer();
 void print_header(const char *title);
@@ -606,12 +594,7 @@ void see_record(char u[]);
 void edit_record(char u[]);
 void delete_record(char u[]);
 void generate_bar_graph(char u[]);
-
-// Removed struct Record and Buffer as they were not fully utilized in the provided logic
-// If they were intended for future features, they can be re-added.
-
-// Define for user data path
-#define USER_DATA_PATH ".\\UserData\\" // Assumes UserData directory exists
+#define USER_DATA_PATH ".\\UserData\\" 
 
 int main() {
     int inputforuser;
@@ -625,11 +608,11 @@ int main() {
             printf("Invalid input. Please enter a number.\n");
             clear_input_buffer();
             printf("Press Enter to continue...");
-            getchar(); // Consume the newline after invalid input
-            getchar(); // Wait for Enter
+            getchar(); 
+            getchar(); 
             continue;
         }
-        clear_input_buffer(); // Consume trailing newline
+        clear_input_buffer(); 
 
         switch (inputforuser) {
             case 1:
@@ -646,17 +629,17 @@ int main() {
             default:
                 printf("Invalid choice. Please choose from 1-3.\n");
                 printf("Press Enter to continue...");
-                getchar(); // Wait for Enter
+                getchar(); 
         }
     }
-    return 0; // Should not reach here
+    return 0; 
 }
 
 void clear_screen() {
 #ifdef _WIN32
     system("cls");
 #else
-    system("clear"); // For Linux/OS X
+    system("clear"); 
 #endif
 }
 
@@ -686,11 +669,11 @@ void signup() {
     print_header("SIGN-UP SCREEN");
 
     printf("Enter Username (No Spaces): ");
-    scanf("%99s", username); // Prevent buffer overflow
+    scanf("%99s", username); 
     clear_input_buffer();
 
     printf("Enter Password (No Spaces, min 4 chars): ");
-    scanf("%99s", password); // Prevent buffer overflow
+    scanf("%99s", password); 
     clear_input_buffer();
 
     if (signupcheck(username, password)) {
@@ -704,7 +687,7 @@ void signup() {
         fprintf(sign, "%s|%s\n", username, password);
         fclose(sign);
 
-        newsignup(username); // Create user-specific file
+        newsignup(username); 
 
         printf("\nSignup successful! You will now be logged in.\n");
         printf("Press Enter to continue...");
@@ -719,34 +702,29 @@ void signup() {
 
 void newsignup(char u[]) {
     char filename[200];
-    sprintf(filename, "%s%s.csv", USER_DATA_PATH, u); // Changed path concatenation
+    sprintf(filename, "%s%s.csv", USER_DATA_PATH, u); 
 
-    FILE *newsign = fopen(filename, "w"); // Use "w" to create or truncate, "a" also works
+    FILE *newsign = fopen(filename, "w"); 
     if (newsign == NULL) {
         perror("Error creating user data file");
-        // Attempt to create directory if it doesn't exist (basic example)
-        // For robust solution, use platform-specific directory creation functions
         #ifdef _WIN32
             char command[250];
             sprintf(command, "mkdir %s", USER_DATA_PATH);
             system(command);
         #else
             char command[250];
-            sprintf(command, "mkdir -p %s", USER_DATA_PATH); // -p creates parent dirs if needed
+            sprintf(command, "mkdir -p %s", USER_DATA_PATH); 
             system(command);
         #endif
-        // Retry opening the file
         newsign = fopen(filename, "w");
         if (newsign == NULL) {
             printf("Could not create user data directory or file: %s\n", filename);
             printf("Please ensure the directory '%s' exists.\n", USER_DATA_PATH);
-            // Decide how to handle this error, e.g., prevent login or inform user
             return;
         }
     }
-    //fprintf(newsign, "ID|Amount|Date|Category\n"); // Optional: Add header to new CSV
     fclose(newsign);
-    printf("User data file created: %s\n", filename); // Confirmation
+    printf("User data file created: %s\n", filename); 
 }
 
 void login() {
@@ -777,35 +755,34 @@ void login() {
 int logincheck(char u[], char p[]) {
     FILE *f = fopen("users.csv", "r");
     if (f == NULL) {
-        // If users.csv doesn't exist, no users can log in.
         printf("No user accounts found. Please sign up first.\n");
         return 0;
     }
 
-    char line[200]; // Increased buffer size
+    char line[200]; 
     while (fgets(line, sizeof(line), f)) {
         char fileUsername[100], filePassword[100];
-        line[strcspn(line, "\n")] = 0; // Remove newline
+        line[strcspn(line, "\n")] = 0; 
 
         char *token = strtok(line, "|");
         if (token != NULL) {
             strncpy(fileUsername, token, sizeof(fileUsername) - 1);
-            fileUsername[sizeof(fileUsername)-1] = '\0'; // Ensure null termination
+            fileUsername[sizeof(fileUsername)-1] = '\0'; 
 
             token = strtok(NULL, "|");
             if (token != NULL) {
                 strncpy(filePassword, token, sizeof(filePassword) - 1);
-                filePassword[sizeof(filePassword)-1] = '\0'; // Ensure null termination
+                filePassword[sizeof(filePassword)-1] = '\0'; 
 
                 if (strcmp(u, fileUsername) == 0 && strcmp(p, filePassword) == 0) {
                     fclose(f);
-                    return 1; // Found
+                    return 1; 
                 }
             }
         }
     }
     fclose(f);
-    return 0; // Not found
+    return 0; 
 }
 
 int signupcheck(char u[], char p[]) {
@@ -813,7 +790,7 @@ int signupcheck(char u[], char p[]) {
         printf("Username can't be empty.\n");
         return 0;
     }
-    if (strchr(u, ' ') != NULL || strchr(u, '|') != NULL) { // Check for spaces or pipe in username
+    if (strchr(u, ' ') != NULL || strchr(u, '|') != NULL) { 
         printf("Username cannot contain spaces or '|' character.\n");
         return 0;
     }
@@ -825,7 +802,7 @@ int signupcheck(char u[], char p[]) {
         printf("Password must be at least 4 characters long.\n");
         return 0;
     }
-    if (strchr(p, ' ') != NULL || strchr(p, '|') != NULL) { // Check for spaces or pipe in password
+    if (strchr(p, ' ') != NULL || strchr(p, '|') != NULL) { 
         printf("Password cannot contain spaces or '|' character.\n");
         return 0;
     }
@@ -833,8 +810,7 @@ int signupcheck(char u[], char p[]) {
 
     FILE *f = fopen("users.csv", "r");
     if (f == NULL) {
-        // If users.csv doesn't exist, this is the first signup.
-        return 1; // Username is available
+        return 1; 
     }
 
     char line[200];
@@ -842,7 +818,7 @@ int signupcheck(char u[], char p[]) {
         char fileUsername[100];
         line[strcspn(line, "\n")] = 0;
 
-        char *token = strtok(line, "|"); // strtok modifies the line
+        char *token = strtok(line, "|"); 
         if (token != NULL) {
             strncpy(fileUsername, token, sizeof(fileUsername) -1);
             fileUsername[sizeof(fileUsername)-1] = '\0';
@@ -850,14 +826,13 @@ int signupcheck(char u[], char p[]) {
             if (strcmp(u, fileUsername) == 0) {
                 printf("The Username '%s' has already been taken!\n", u);
                 fclose(f);
-                return 0; // Username taken
+                return 0; 
             }
         }
     }
     fclose(f);
-    return 1; // Username available
+    return 1; 
 }
-
 
 void display_user_menu(const char *username) {
     char title[100];
@@ -900,7 +875,7 @@ void login_successful(char u[]) {
                 printf("Logging out...\n");
                 printf("Press Enter to return to the main menu...");
                 getchar();
-                return; // Go back to main menu
+                return; 
             case 7:
                 clear_screen();
                 printf("Thank you for using the Expense Management System!\n");
@@ -911,14 +886,14 @@ void login_successful(char u[]) {
                 printf("Press Enter to continue...");
                 getchar();
         }
-         if (input >= 1 && input <= 5) { // Pause after actions before re-displaying menu
+         if (input >= 1 && input <= 5) { 
             printf("\nPress Enter to continue...");
             getchar();
         }
     }
 }
 
-int category(char *c_out) { // Changed parameter name to avoid conflict
+int category(char *c_out) { 
     int choice;
     clear_screen();
     print_header("SELECT CATEGORY");
@@ -927,7 +902,7 @@ int category(char *c_out) { // Changed parameter name to avoid conflict
         printf("1. Food\n");
         printf("2. Transport\n");
         printf("3. Clothing\n");
-        printf("4. Miscellaneous\n"); // Corrected spelling
+        printf("4. Miscellaneous\n"); 
         printf("Enter 1-4: ");
 
         if (scanf("%d", &choice) != 1) {
@@ -946,7 +921,7 @@ int category(char *c_out) { // Changed parameter name to avoid conflict
             case 1: strcpy(c_out, "Food"); return 0;
             case 2: strcpy(c_out, "Transport"); return 0;
             case 3: strcpy(c_out, "Clothing"); return 0;
-            case 4: strcpy(c_out, "Miscellaneous"); return 0; // Corrected spelling
+            case 4: strcpy(c_out, "Miscellaneous"); return 0; 
             default:
                 printf("Invalid choice. Please choose from 1-4.\n");
                 printf("Press Enter to try again...");
@@ -963,17 +938,15 @@ void add_record(char u[]) {
 
     float amt;
     char date[12], cat[30], line[256];
-    int current_id = 0; // Initialize current_id
+    int current_id = 0; 
 
     clear_screen();
     print_header("ADD NEW RECORD");
 
-    // First, read the file to determine the next ID
     FILE *read_file = fopen(filename, "r");
     if (read_file != NULL) {
         while (fgets(line, sizeof(line), read_file)) {
             int temp_id;
-            // Assuming format ID|Amount|Date|Category
             if (sscanf(line, "%d|", &temp_id) == 1) {
                 if (temp_id > current_id) {
                     current_id = temp_id;
@@ -982,10 +955,6 @@ void add_record(char u[]) {
         }
         fclose(read_file);
     } else {
-        // File might not exist yet, or is empty. current_id remains 0.
-        // The directory check in newsignup should handle directory creation.
-        // If fopen for read fails here, it implies the file doesn't exist or isn't readable.
-        // We can proceed, and fopen with "a" will create it.
         printf("Note: No existing records found or file not accessible. Starting with ID 1.\n");
     }
     int new_id = current_id + 1;
@@ -1000,12 +969,12 @@ void add_record(char u[]) {
     clear_input_buffer();
 
     printf("Enter Date (e.g., YYYY-MM-DD): ");
-    scanf("%11s", date); // Limit input size
+    scanf("%11s", date); 
     clear_input_buffer();
 
-    category(cat); // This function now handles its own screen clearing and menu
+    category(cat); 
 
-    FILE *addrecord_file = fopen(filename, "a"); // Open in append mode
+    FILE *addrecord_file = fopen(filename, "a"); 
     if (addrecord_file == NULL) {
         perror("Error opening user data file for adding record");
         printf("Failed to open file: %s\n", filename);
@@ -1018,9 +987,8 @@ void add_record(char u[]) {
     printf("\nRecord added successfully with ID: %d!\n", new_id);
 }
 
-
 void see_record(char u[]) {
-    char filename[200], line[256]; // Increased line buffer
+    char filename[200], line[256]; 
     sprintf(filename, "%s%s.csv", USER_DATA_PATH, u);
 
     clear_screen();
@@ -1030,7 +998,6 @@ void see_record(char u[]) {
     if (seerecord == NULL) {
         printf("No records found for user '%s' or file could not be opened.\n", u);
         printf("Path: %s\n", filename);
-        // perror("Reason"); // Optionally print system error
         return;
     }
 
@@ -1040,7 +1007,7 @@ void see_record(char u[]) {
     int count = 0;
     while (fgets(line, sizeof(line), seerecord)) {
         char id_str[10], amount_str[20], date_str[20], category_str[50];
-        line[strcspn(line, "\n")] = 0; // Remove newline
+        line[strcspn(line, "\n")] = 0; 
 
         char *token = strtok(line, "|");
         if (token) strncpy(id_str, token, sizeof(id_str)-1); else strcpy(id_str, "N/A");
@@ -1054,7 +1021,7 @@ void see_record(char u[]) {
         if (token) strncpy(date_str, token, sizeof(date_str)-1); else strcpy(date_str, "N/A");
         date_str[sizeof(date_str)-1] = '\0';
 
-        token = strtok(NULL, "\n"); // Read till end of line for category
+        token = strtok(NULL, "\n"); 
         if (token) strncpy(category_str, token, sizeof(category_str)-1); else strcpy(category_str, "N/A");
         category_str[sizeof(category_str)-1] = '\0';
 
@@ -1071,14 +1038,12 @@ void see_record(char u[]) {
     }
 }
 
-// Temporary structure for holding record data during edit/delete
 struct TempRecord {
     int id;
     float amount;
     char date[50];
     char category[50];
 };
-
 
 void edit_record(char u[]) {
     char filename[200];
@@ -1087,8 +1052,7 @@ void edit_record(char u[]) {
     clear_screen();
     print_header("EDIT RECORD");
 
-    // Display records first so user knows which ID to edit
-    see_record(u); // This will print records and then return
+    see_record(u); 
     printf("\n----------------------------------------\n");
     printf("           EDIT RECORD SECTION\n");
     printf("----------------------------------------\n");
@@ -1100,12 +1064,11 @@ void edit_record(char u[]) {
         return;
     }
 
-    struct TempRecord records[200]; // Assuming max 200 records for simplicity
+    struct TempRecord records[200]; 
     int count = 0;
     char line[256];
 
     while (fgets(line, sizeof(line), file) && count < 200) {
-        // Format: ID|Amount|Date|Category
         if (sscanf(line, "%d|%f|%49[^|]|%49[^\n]", &records[count].id, &records[count].amount, records[count].date, records[count].category) == 4) {
             count++;
         }
@@ -1167,7 +1130,7 @@ void edit_record(char u[]) {
             clear_input_buffer();
             break;
         case 3:
-            category(records[found_index].category); // Let category function handle its UI
+            category(records[found_index].category); 
             break;
         case 4:
             printf("Edit cancelled.\n");
@@ -1177,7 +1140,6 @@ void edit_record(char u[]) {
             return;
     }
 
-    // Rewrite the file
     file = fopen(filename, "w");
     if (file == NULL) {
         perror("Error opening file for writing changes");
@@ -1191,7 +1153,6 @@ void edit_record(char u[]) {
     printf("\nRecord edited successfully!\n");
 }
 
-
 void delete_record(char u[]) {
     char filename[200];
     sprintf(filename, "%s%s.csv", USER_DATA_PATH, u);
@@ -1199,7 +1160,7 @@ void delete_record(char u[]) {
     clear_screen();
     print_header("DELETE RECORD");
 
-    see_record(u); // Display records first
+    see_record(u); 
     printf("\n----------------------------------------\n");
     printf("         DELETE RECORD SECTION\n");
     printf("----------------------------------------\n");
@@ -1237,19 +1198,17 @@ void delete_record(char u[]) {
     clear_input_buffer();
 
     int found = 0;
-    file = fopen(filename, "w"); // Open in write mode to overwrite
+    file = fopen(filename, "w"); 
     if (file == NULL) {
         perror("Error opening file for writing changes after delete");
         return;
     }
 
-    int new_id_counter = 1; // For re-indexing IDs
+    int new_id_counter = 1; 
     for (int i = 0; i < count; i++) {
         if (records[i].id == id_to_delete) {
             found = 1;
-            // Skip writing this record
         } else {
-            // Write other records, potentially with new sequential IDs
             fprintf(file, "%d|%.2f|%s|%s\n", new_id_counter, records[i].amount, records[i].date, records[i].category);
             new_id_counter++;
         }
@@ -1262,7 +1221,6 @@ void delete_record(char u[]) {
         printf("\nRecord with ID %d not found.\n", id_to_delete);
     }
 }
-
 
 void generate_bar_graph(char u[]) {
     char filename[200];
@@ -1279,13 +1237,12 @@ void generate_bar_graph(char u[]) {
     }
 
     float food = 0, transport = 0, clothing = 0, misc = 0;
-    char line[256], category_val[50]; // Renamed to avoid conflict with category function
+    char line[256], category_val[50]; 
     float amount;
-    int id; // Unused but part of sscanf
-    char date[50]; // Unused but part of sscanf
+    int id; 
+    char date[50]; 
 
     while (fgets(line, sizeof(line), file)) {
-        // Format: ID|Amount|Date|Category
         if (sscanf(line, "%d|%f|%49[^|]|%49[^\n]", &id, &amount, date, category_val) == 4) {
             if (strcmp(category_val, "Food") == 0)
                 food += amount;
@@ -1293,7 +1250,7 @@ void generate_bar_graph(char u[]) {
                 transport += amount;
             else if (strcmp(category_val, "Clothing") == 0)
                 clothing += amount;
-            else if (strcmp(category_val, "Miscellaneous") == 0) // Corrected spelling
+            else if (strcmp(category_val, "Miscellaneous") == 0) 
                 misc += amount;
         }
     }
@@ -1309,11 +1266,11 @@ void generate_bar_graph(char u[]) {
         perror("Failed to create graphdata.dat");
         return;
     }
-    fprintf(data_file, "Category Amount\n"); // Gnuplot can use this header for xtic(1)
+    fprintf(data_file, "Category Amount\n"); 
     fprintf(data_file, "Food %.2f\n", food);
     fprintf(data_file, "Transport %.2f\n", transport);
     fprintf(data_file, "Clothing %.2f\n", clothing);
-    fprintf(data_file, "Miscellaneous %.2f\n", misc); // Corrected spelling
+    fprintf(data_file, "Miscellaneous %.2f\n", misc); 
     fclose(data_file);
 
     printf("Attempting to generate bar graph using Gnuplot...\n");
@@ -1325,12 +1282,10 @@ void generate_bar_graph(char u[]) {
     printf("Miscellaneous: %.2f\n\n", misc);
 
 
-    // Using _popen for Windows, popen for POSIX
     FILE *gnuplot_pipe;
 #ifdef _WIN32
     gnuplot_pipe = _popen("gnuplot -persistent", "w");
 #else
-    // Check if gnuplot is available
     if (system("command -v gnuplot >/dev/null 2>&1") != 0) {
          printf("Gnuplot is not installed or not in PATH. Cannot generate graph.\n");
          printf("Please install Gnuplot and ensure it's in your system's PATH.\n");
@@ -1343,12 +1298,12 @@ void generate_bar_graph(char u[]) {
     if (gnuplot_pipe) {
         fprintf(gnuplot_pipe, "set title 'Expenses by Category for %s'\n", u);
         fprintf(gnuplot_pipe, "set style data histograms\n");
-        fprintf(gnuplot_pipe, "set style fill solid 0.7 border -1\n"); // Added border
-        fprintf(gnuplot_pipe, "set boxwidth 0.8 relative\n"); // Relative boxwidth
+        fprintf(gnuplot_pipe, "set style fill solid 0.7 border -1\n"); 
+        fprintf(gnuplot_pipe, "set boxwidth 0.8 relative\n"); 
         fprintf(gnuplot_pipe, "set xlabel 'Category'\n");
         fprintf(gnuplot_pipe, "set ylabel 'Amount Spent'\n");
-        fprintf(gnuplot_pipe, "set yrange [0:*]\n"); // Ensure y-axis starts at 0
-        fprintf(gnuplot_pipe, "set style histogram clustered gap 1\n"); // Clustered with gap
+        fprintf(gnuplot_pipe, "set yrange [0:*]\n"); 
+        fprintf(gnuplot_pipe, "set style histogram clustered gap 1\n"); 
         fprintf(gnuplot_pipe, "plot 'graphdata.dat' using 2:xticlabels(1) title 'Expenses' lc rgb '#406090'\n"); // Using xticlabels and color
 
 #ifdef _WIN32
