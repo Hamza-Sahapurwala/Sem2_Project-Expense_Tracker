@@ -16,6 +16,25 @@ void edit_record(char u[]);
 void delete_record(char u[]);
 void generate_bar_graph(char u[]);
 
+struct Record{
+
+    int amount;
+
+    char date[12];
+
+    char Category[30];
+
+};
+
+#define MAX_BUFFER 100
+
+struct Buffer {
+    struct Record records[MAX_BUFFER];
+    int count;
+};
+
+struct Buffer recordBuffer = {.count = 0};
+
 int main(){
     
     printf("Welcome!!!\n");
@@ -338,6 +357,14 @@ void add_record(char u[]){
     }
 
     fprintf(addrecord, "%d|%.2f|%s|%s\n", id + 1, amt, date, cat);
+
+    if (recordBuffer.count < MAX_BUFFER) {
+    struct Record *r = &recordBuffer.records[recordBuffer.count];
+    r->amount = amt;
+    strcpy(r->date, date);
+    strcpy(r->Category, cat);
+    recordBuffer.count++;
+}
 
     fclose(addrecord);
 
