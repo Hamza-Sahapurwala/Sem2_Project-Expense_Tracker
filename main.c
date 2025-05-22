@@ -594,7 +594,6 @@ void clear_input_buffer();
 void print_header(const char *title);
 void display_main_menu();
 void display_user_menu(const char *username);
-
 void signup();
 void newsignup(char u[]);
 void login();
